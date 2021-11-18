@@ -56,12 +56,12 @@ async function main() {
     });
 
     // [POST] "/herois" - Create
-    app.post("/herois", function (req, res) {
+    app.post("/herois", async function (req, res) {
         const item = req.body;
 
-        herois.push(item.nome);
+        await collection.insertOne(item);
 
-        res.send("Registro criado com sucesso: " + item.nome);
+        res.send(item);
     });
 
     // [PUT] "/herois/:id" - Update (Atualizar)
