@@ -81,10 +81,10 @@ async function main() {
     });
 
     // [DELETE] "/herois/:id" - Delete (Remover)
-    app.delete("/herois/:id", function (req, res) {
-        const id = +req.params.id - 1;
+    app.delete("/herois/:id", async function (req, res) {
+        const id = req.params.id;
 
-        delete herois[id];
+        await collection.deleteOne({ _id: new ObjectId(id) });
 
         res.send("Registro removido com sucesso.");
     });
