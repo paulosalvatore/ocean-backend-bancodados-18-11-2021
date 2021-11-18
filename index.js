@@ -5,7 +5,7 @@
 // Realizar as operações
 
 const express = require("express");
-const { MongoClient } = require("mongodb");
+const { MongoClient, ObjectId } = require("mongodb");
 
 const url = "mongodb://localhost:27017";
 const dbName = "ocean_bancodados_18_11_2021";
@@ -42,14 +42,14 @@ async function main() {
     });
 
     // [GET] "/herois/:id" - Read Single By Id (Ler individualmente - pelo Id)
-    app.get("/herois/:id", function (req, res) {
+    app.get("/herois/:id", async function (req, res) {
         // Lógica de obtenção do ID
-        const id = +req.params.id - 1;
+        const id = req.params.id;
 
         // console.log(id, typeof id);
 
         // Lógica de acesso ao dados
-        const item = herois[id];
+        const item = await collection.findOne({ _id: new ObjectId(id) });
 
         // Lógica de envio desse dado encontrado
         res.send(item);
