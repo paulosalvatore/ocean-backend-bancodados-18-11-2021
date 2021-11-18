@@ -1,67 +1,88 @@
+// Instalar o MongoDB
+// Importar o MongoDB
+// Realizar a conexão com o banco de dados
+// Procurar pela collection que criamos
+// Realizar as operações
+
 const express = require("express");
-const app = express();
+const { MongoClient } = require("mongodb");
 
-// Informando para o Express considerar o corpo da requisição
-// em formato JSON
-app.use(express.json());
+const url = "mongodb://localhost:27017";
+const dbName = "ocean_bancodados_18_11_2021";
 
-app.get("/", function (req, res) {
-    res.send("Hello, World!");
-});
+async function main() {
+    const client = await MongoClient.connect(url);
 
-app.get("/oi", function (req, res) {
-    res.send("Olá, mundo!");
-});
+    const db = client.db(dbName);
 
-const herois = ["Mulher Maravilha", "Capitã Marvel", "Homem de Ferro"];
-//               0                   1                2
+    const collection = db.collection("herois");
 
-// [GET] "/herois" - Read All (Ler tudo)
-app.get("/herois", function (req, res) {
-    res.send(herois.filter(Boolean));
-});
+    const app = express();
 
-// [GET] "/herois/:id" - Read Single By Id (Ler individualmente - pelo Id)
-app.get("/herois/:id", function (req, res) {
-    // Lógica de obtenção do ID
-    const id = +req.params.id - 1;
+    // Informando para o Express considerar o corpo da requisição
+    // em formato JSON
+    app.use(express.json());
 
-    // console.log(id, typeof id);
+    app.get("/", function (req, res) {
+        res.send("Hello, World!");
+    });
 
-    // Lógica de acesso ao dados
-    const item = herois[id];
+    app.get("/oi", function (req, res) {
+        res.send("Olá, mundo!");
+    });
 
-    // Lógica de envio desse dado encontrado
-    res.send(item);
-});
+    const herois = ["Mulher Maravilha", "Capitã Marvel", "Homem de Ferro"];
+    //               0                   1                2
 
-// [POST] "/herois" - Create
-app.post("/herois", function (req, res) {
-    const item = req.body;
+    // [GET] "/herois" - Read All (Ler tudo)
+    app.get("/herois", function (req, res) {
+        res.send(herois.filter(Boolean));
+    });
 
-    herois.push(item.nome);
+    // [GET] "/herois/:id" - Read Single By Id (Ler individualmente - pelo Id)
+    app.get("/herois/:id", function (req, res) {
+        // Lógica de obtenção do ID
+        const id = +req.params.id - 1;
 
-    res.send("Registro criado com sucesso: " + item.nome);
-});
+        // console.log(id, typeof id);
 
-// [PUT] "/herois/:id" - Update (Atualizar)
-app.put("/herois/:id", function (req, res) {
-    const id = +req.params.id - 1;
+        // Lógica de acesso ao dados
+        const item = herois[id];
 
-    const item = req.body;
+        // Lógica de envio desse dado encontrado
+        res.send(item);
+    });
 
-    herois[id] = item.nome;
+    // [POST] "/herois" - Create
+    app.post("/herois", function (req, res) {
+        const item = req.body;
 
-    res.send("Registro atualizado com sucesso: " + item.nome);
-});
+        herois.push(item.nome);
 
-// [DELETE] "/herois/:id" - Delete (Remover)
-app.delete("/herois/:id", function (req, res) {
-    const id = +req.params.id - 1;
+        res.send("Registro criado com sucesso: " + item.nome);
+    });
 
-    delete herois[id];
+    // [PUT] "/herois/:id" - Update (Atualizar)
+    app.put("/herois/:id", function (req, res) {
+        const id = +req.params.id - 1;
 
-    res.send("Registro removido com sucesso.");
-});
+        const item = req.body;
 
-app.listen(3000);
+        herois[id] = item.nome;
+
+        res.send("Registro atualizado com sucesso: " + item.nome);
+    });
+
+    // [DELETE] "/herois/:id" - Delete (Remover)
+    app.delete("/herois/:id", function (req, res) {
+        const id = +req.params.id - 1;
+
+        delete herois[id];
+
+        res.send("Registro removido com sucesso.");
+    });
+
+    app.listen(3000);
+}
+
+main();
